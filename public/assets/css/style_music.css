@@ -1,0 +1,45 @@
+body{
+    background-image: url('https://magicalmirai.com/10th/procon/images/og_en.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    backdrop-filter: blur(4px);
+    justify-content: space-between;
+}
+
+.background{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+header, main{
+    z-index: 1;
+}
+
+header{
+    width: 50%;
+}
+
+main{
+    width: 50%;
+}
+
+.select-label{
+    background: linear-gradient(90deg, #008B8B 0%, rgba(5, 152, 150, 0.81) 65%, rgba(15, 179, 173, 0.44) 88%, rgba(27, 211, 200, 0) 100%);
+    width: 71%;
+}
+
+.album-info-label{
+    background: linear-gradient(90deg, #C77700 0%, rgba(199, 119, 0, 0.81) 65%, rgba(199, 119, 0, 0.44) 88%, rgba(199, 119, 0, 0) 100%);
+    width: 71%;
+}
+
+.filter {
+    background: rgba(0, 0, 0, 0.50);
+    background-image: url('{{ asset("assets/background/background_arrow.svg") }}');
+}
+
+.music-card{
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0) 10%);
+}
