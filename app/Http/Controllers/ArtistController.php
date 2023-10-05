@@ -2,25 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Artists;
+use App\Http\Controllers\ResponseController;
+use App\Http\Requests\ArtistRequest;
+use App\Models\Artist;
+use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\Request;
 
-class ArtistController extends Controller
+class ArtistController 
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, ResponseController;
 
-    public function store(Request $request)
+    public function show()
     {
-        $request->validate([
-            'artist_name' => 'required',
-            'artist_country' => 'required',
-            'artist_debut' => 'required',
-            'artist_image_url' => 'nullable',
-        ]);
+        
+        return $this->showResponse(Artist::all());
+    }
 
-        if($request->hasFile('artist_image_url')){
-            
+    public function store(ArtistRequest $request)
+    {
+        $dataArtist = [
+            'artist_name' => $request->input('artist_name'),
+            'artist_country' => $request->input('artist_country'),
+            'artist_debut' => $request->input('artist_debut')
+        ];
+
+        //Validating image is file
+        if($request->hasFile('artist_image_url'))
+        {
+            $artistImage = $request->file('artist_image_url');
+            $artistImageFile = Str::random() . '.' . $artistImage->getClientOriginalExtension();
+            $artistImage->storeAs('public/assets/artist_images', $artistImageFile);
+            $dataArtist['artist_image_url'] = $artistImage;
         }
+        else
+        {
+           
+        }
+
+        //Store to model database
+        Artist::create($dataArtist);
+
+        return $this->postResponse($dataArtist);
     }
 }
