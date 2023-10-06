@@ -12,10 +12,21 @@ class ArtistController
 {
     use AuthorizesRequests, ResponseController;
 
-    public function show()
+    public function showAll()
     {
-        
         return $this->showResponse(Artist::all());
+    }
+
+    public function showSpesific($id)
+    {
+        $artist = Artist::find($id);
+
+        if(!$artist)
+        {
+            return $this->notFoundResponse();
+        }
+
+        return $this->showResponse($artist);
     }
 
     public function store(ArtistRequest $request)
@@ -26,7 +37,6 @@ class ArtistController
             'artist_debut' => $request->input('artist_debut')
         ];
 
-        //Validating image is file
         if($request->hasFile('artist_image_url'))
         {
             $artistImage = $request->file('artist_image_url');
@@ -36,12 +46,57 @@ class ArtistController
         }
         else
         {
-           
+           return $this->errorResponse();
         }
 
-        //Store to model database
         Artist::create($dataArtist);
 
         return $this->postResponse($dataArtist);
+    }
+
+    public function edit(ArtistRequest $request, $id)
+    {
+        $artist = Artist::find($id);
+
+        if(!$artist)
+        {
+            return $this->notFoundResponse();
+        }
+
+        $dataArtist = [
+            'artist_name' => $request->input('artist_name'),
+            'artist_country' => $request->input('artist_country'),
+            'artist_debut' => $request->input('artist_debut')
+        ];
+
+        if($request->hasFile('artist_image_url'))
+        {
+            $artistImage = $request->file('artist_image_url');
+            $artistImageFile = Str::random() . '.' . $artistImage->getClientOriginalExtension();
+            $artistImage->storeAs('public/assets/artist_images', $artistImageFile);
+            $dataArtist['artist_image_url'] = $artistImage;
+        }
+        else
+        {
+           return $this->errorResponse();
+        }
+
+        $artist->update($dataArtist);
+
+        return $this->putResponse($dataArtist);
+    }
+
+    public function delete($id)
+    {
+        $artist = Artist::find($id);
+        
+        if(!$artist)
+        {
+            return $this->notFoundResponse();
+        }
+
+        $artist->delete();
+
+        return $this->deleteResponse();
     }
 }
