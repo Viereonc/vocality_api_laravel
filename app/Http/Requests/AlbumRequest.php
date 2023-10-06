@@ -11,7 +11,7 @@ class AlbumRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,7 +25,7 @@ class AlbumRequest extends FormRequest
             'artist_id_foreign' => 'required',
             'album_name' => 'required',
             'album_created' => 'nullable',
-            'album_image_url' => 'nullable',
+            'album_image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'album_banner_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ];
     }
