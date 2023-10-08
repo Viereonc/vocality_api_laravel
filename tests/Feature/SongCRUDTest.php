@@ -9,9 +9,6 @@ use Tests\TestCase;
 
 class SongCRUDTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
     public function testGetAll()
     {
         $response = $this->get('http://127.0.0.1:8000/api/song/show');
