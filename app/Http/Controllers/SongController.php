@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SongRequest;
 use App\Models\Song;
 use Illuminate\Http\Request;
 
 class SongController
 {
-    use ResponseController;
+    use ResponseController, FunctionController;
 
     public function showAll()
     {
@@ -28,19 +29,38 @@ class SongController
         return $this->showResponse($song);
     }
 
-    public function store()
+    public function store(SongRequest $requset)
     {
         $dataSong = [
-            'artist_id_foreign' => '',
-            'album_id_foreign' => '',
-            'song_name' => '',
-            'song_duration' => '',
+            'artist_id_foreign' => $requset->input('artist_id_foreign'),
+            'album_id_foreign' => $requset->input('album_id_foreign'),
+            'song_name' => $requset->input('song_name'),
+            'song_duration' => $requset->input('song_duration'),
+            'song_image_url' => $this->encode($requset->file('song_image_url')),
         ];
+
+        return $this->postResponse($dataSong);
     }
 
-    public function edit($id)
+    public function update(SongRequest $requset, $id)
     {
-        
+        $song= Song::find($id);
+
+        if (!$song) {
+            return $this->notFoundResponse();
+        }
+
+        $dataSong = [
+            'artist_id_foreign' => $requset->input('artist_id_foreign'),
+            'album_id_foreign' => $requset->input('album_id_foreign'),
+            'song_name' => $requset->input('song_name'),
+            'song_duration' => $requset->input('song_duration'),
+            'song_image_url' => $this->encode($requset->file('song_image_url')),
+        ];
+
+        $song->update($dataSong);
+
+        return $this->putResponse($dataSong);
     }
 
     public function delete($id)

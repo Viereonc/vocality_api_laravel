@@ -7,10 +7,11 @@ use App\Http\Requests\ArtistRequest;
 use App\Models\Artist;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Storage;
 
 class ArtistController 
 {
-    use AuthorizesRequests, ResponseController;
+    use ResponseController, FunctionController;
 
     public function showAll()
     {
@@ -34,52 +35,29 @@ class ArtistController
         $dataArtist = [
             'artist_name' => $request->input('artist_name'),
             'artist_country' => $request->input('artist_country'),
-            'artist_debut' => $request->input('artist_debut')
+            'artist_debut' => $request->input('artist_debut'),
+            'artist_image_url' => $this->encode($request->file('artist_image_url')),
         ];
-
-        if($request->hasFile('artist_image_url'))
-        {
-            $artistImage = $request->file('artist_image_url');
-            $artistImageFile = Str::random() . '.' . $artistImage->getClientOriginalExtension();
-            $artistImage->storeAs('public/assets/artist_images', $artistImageFile);
-            $dataArtist['artist_image_url'] = $artistImage;
-        }
-        else
-        {
-           return $this->errorResponse();
-        }
 
         Artist::create($dataArtist);
 
         return $this->postResponse($dataArtist);
     }
 
-    public function edit(ArtistRequest $request, $id)
+    public function update(ArtistRequest $request, $id)
     {
         $artist = Artist::find($id);
 
-        if(!$artist)
-        {
+        if (!$artist) {
             return $this->notFoundResponse();
         }
 
         $dataArtist = [
             'artist_name' => $request->input('artist_name'),
             'artist_country' => $request->input('artist_country'),
-            'artist_debut' => $request->input('artist_debut')
+            'artist_debut' => $request->input('artist_debut'),
+            'artist_image_url' => $this->encode($request->file('artist_image_url')),
         ];
-
-        if($request->hasFile('artist_image_url'))
-        {
-            $artistImage = $request->file('artist_image_url');
-            $artistImageFile = Str::random() . '.' . $artistImage->getClientOriginalExtension();
-            $artistImage->storeAs('public/assets/artist_images', $artistImageFile);
-            $dataArtist['artist_image_url'] = $artistImage;
-        }
-        else
-        {
-           return $this->errorResponse();
-        }
 
         $artist->update($dataArtist);
 

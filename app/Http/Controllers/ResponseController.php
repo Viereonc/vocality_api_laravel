@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 trait ResponseController
 {
-    
     public function showResponse($data)
     {
         $responseHeader = [

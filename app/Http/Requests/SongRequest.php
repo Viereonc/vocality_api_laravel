@@ -22,7 +22,12 @@ class SongRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'artist_id_foreign' => 'required',
+            'album_id_foreign' => 'required',
+            'song_name' => 'required',
+            'song_duration' => 'required',
+            'song_file_url' => 'required',
+            'song_image_url' => 'nullable' 
         ];
     }
 }

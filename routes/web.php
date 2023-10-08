@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Album;
+use App\Models\Artist;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,5 +26,11 @@ Route::get('/dashboard', function(){
 Route::get('/dashboard/album/{album}', function(Album $album){
     return view('view_music', [
         'album' => $album,
+    ]);
+});
+
+Route::get('/testing/artist/{artist}', function(Artist $artist){
+    return view('tasting_song', [
+        'artist' => $artist,
     ]);
 });

@@ -7,7 +7,7 @@ use App\Models\Album;
 
 class AlbumController
 {
-    use ResponseController;
+    use ResponseController, FunctionController;
 
     public function showAll()
     {
@@ -34,6 +34,8 @@ class AlbumController
             'artist_id_foreign' => $request->input('artist_id_foreign'),
             'album_name' => $request->input('album_name'),
             'album_created' => $request->input('album_created'), 
+            'album_image_url' => $this->encode($request->file('album_image_url')),
+            'album_banner_url' => $this->encode($request->file('album_banner_url'))
         ];
 
         Album::create($dataAlbum);
@@ -41,20 +43,22 @@ class AlbumController
         return $this->postResponse($dataAlbum);
     }
 
-    public function edit(AlbumRequest $request, $id)
+    public function update(AlbumRequest $request, $id)
     {
         $album = Album::find($id);
+        
+        if(!$album)
+        {
+            return $this->notFoundResponse();
+        }
 
         $dataAlbum = [
             'artist_id_foreign' => $request->input('artist_id_foreign'),
             'album_name' => $request->input('album_name'),
             'album_created' => $request->input('album_created'), 
+            'album_image_url' => $this->encode($request->file('album_image_url')),
+            'album_banner_url' => $this->encode($request->file('album_banner_url'))
         ];
-
-        if(!$album)
-        {
-            return $this->notFoundResponse();
-        }
 
         $album->update($dataAlbum);
 
