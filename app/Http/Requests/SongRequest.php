@@ -26,7 +26,7 @@ class SongRequest extends FormRequest
             'album_id_foreign' => 'required',
             'song_name' => 'required',
             'song_duration' => 'required',
-            'song_file_url' => 'required',
+            'song_file_url' => 'nullable',
             'song_image_url' => 'nullable' 
         ];
     }
