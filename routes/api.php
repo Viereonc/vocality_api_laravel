@@ -21,30 +21,41 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('artist/show', [ArtistController::class, 'showAll']);
+Route::prefix('artist')->group(function () 
+{
+    Route::get('/show', [ArtistController::class, 'showAll']);
 
-Route::get('artist/show/{id}', [ArtistController::class, 'showSpesific']);
+    Route::get('/show/{id}', [ArtistController::class, 'showSpesific']);
 
-Route::post('artist/post', [ArtistController::class, 'store']);
+    Route::post('/post', [ArtistController::class, 'store']);
 
-Route::put('artist/edit/{id}', [ArtistController::class, 'edit']);
+    Route::post('/update/{id}', [ArtistController::class, 'update']);
 
-Route::delete('artist/delete/{id}', [ArtistController::class, 'delete']);
+    Route::delete('/delete/{id}', [ArtistController::class, 'delete']);
+});
 
-Route::get('album/show', [AlbumController::class, 'showAll']);
+Route::prefix('album')->group(function ()
+{
+    Route::get('/show', [AlbumController::class, 'showAll']);
 
-Route::get('album/show/{id}', [AlbumController::class, 'showSpesific']);
+    Route::get('/show/{id}', [AlbumController::class, 'showSpesific']);
 
-Route::post('album/post', [AlbumController::class, 'store']);
+    Route::post('/post', [AlbumController::class, 'store']);
 
-Route::put('album/edit/{id}', [AlbumController::class, 'edit']);
+    Route::post('/update/{id}', [AlbumController::class, 'update']);
 
-Route::delete('album/delete/{id}', [AlbumController::class, 'delete']);
+    Route::delete('/delete/{id}', [AlbumController::class, 'delete']);
+});
 
-Route::get('song/show', [SongController::class, 'showAll']);
+Route::prefix('song')->group(function () 
+{
+    Route::get('/show', [SongController::class, 'showAll']);
 
-Route::get('song/show/{id}', [SongController::class, 'showSpesific']);
+    Route::get('/show/{id}', [SongController::class, 'showSpesific']);
 
-Route::put('song/edit/{id}', [SongController::class, 'edit']);
+    Route::post('/post', [SongController::class, 'store']);
 
-Route::delete('song/delete/{id}', [SongController::class, 'delete']);
+    Route::post('/update/{id}', [SongController::class, 'update']);
+
+    Route::delete('/delete/{id}', [SongController::class, 'delete']);
+});
