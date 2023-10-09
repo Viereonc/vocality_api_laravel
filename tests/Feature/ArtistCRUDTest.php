@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Artist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use \Illuminate\Http\UploadedFile;
@@ -9,10 +10,6 @@ use Tests\TestCase;
 
 class ArtistCRUDTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-
     public function testGetAll()
     {
         $response = $this->get('http://127.0.0.1:8000/api/artist/show');
@@ -22,7 +19,9 @@ class ArtistCRUDTest extends TestCase
 
     public function testGetId()
     {
-        $response = $this->get('http://127.0.0.1:8000/api/artist/show/1');
+        $latestId = Artist::max('id');
+
+        $response = $this->get("http://127.0.0.1:8000/api/artist/show/$latestId");
 
         $response->assertStatus(200);
     }
@@ -47,6 +46,7 @@ class ArtistCRUDTest extends TestCase
     public function testUpdate()
     {
         $imagePath = storage_path('Gawr Gura.jpg');
+        $latestId = Artist::max('id');
 
         $dataArtist = [
             'artist_name' => 'Gawr Gura CH',
@@ -55,7 +55,7 @@ class ArtistCRUDTest extends TestCase
             'artist_image_url' => new UploadedFile($imagePath, 'test_image.jpg', 'image/jpeg', null, true),
         ];
 
-        $response = $this->post('http://127.0.0.1:8000/api/artist/update/12', $dataArtist);
+        $response = $this->post("http://127.0.0.1:8000/api/artist/update/$latestId", $dataArtist);
 
         $response->assertStatus(200);
         $this->assertDatabaseHas('tb_artists', ['artist_name' => 'Gawr Gura CH']);
@@ -63,7 +63,9 @@ class ArtistCRUDTest extends TestCase
 
     public function testDelete()
     {
-        $response = $this->delete('http://127.0.0.1:8000/api/artist/delete/12');
+        $latestId = Artist::max('id');
+
+        $response = $this->delete("http://127.0.0.1:8000/api/artist/delete/$latestId");
         
         $response->assertStatus(200);
     }
