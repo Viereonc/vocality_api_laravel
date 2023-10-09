@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Song;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use \Illuminate\Http\UploadedFile;
@@ -18,7 +19,9 @@ class SongCRUDTest extends TestCase
 
     public function testGetId()
     {
-        $response = $this->get('http://127.0.0.1:8000/api/song/show/1');
+        $latestId = Song::max('id');
+
+        $response = $this->get("http://127.0.0.1:8000/api/song/show/$latestId");
 
         $response->assertStatus(200);
     }
@@ -27,35 +30,36 @@ class SongCRUDTest extends TestCase
     {
         $imagePath = storage_path('SongImage.jpeg');
 
-        $dataArtist = [
+        $dataSong = [
             'artist_id_foreign' => 2,
             'album_id_foreign' => 2,
-            'song_name' => 'Moon',
+            'song_name' => 'Moo',
             'song_duration' => 193,
-            'song_file_url' => '',
+            'song_file_url' => new UploadedFile($imagePath, 'test_image.jpeg', 'image/jpeg', null, true),
             'song_image_url' => new UploadedFile($imagePath, 'test_image.jpeg', 'image/jpeg', null, true),
         ];
 
-        $response = $this->post('http://127.0.0.1:8000/api/song/post', $dataArtist);
+        $response = $this->post('http://127.0.0.1:8000/api/song/post', $dataSong);
 
         $response->assertStatus(201);
-        $this->assertDatabaseHas('tb_songs', ['song_name' => 'Moon']);
+        $this->assertDatabaseHas('tb_songs', ['song_name' => 'Moo']);
     }
 
     public function testUpdate()
     {
         $imagePath = storage_path('SongImage.jpeg');
+        $latestId = Song::max('id');
 
-        $dataArtist = [
+        $dataSong = [
             'artist_id_foreign' => 2,
             'album_id_foreign' => 2,
             'song_name' => 'MoonD',
             'song_duration' => 193,
-            'song_file_url' => '',
+            'song_file_url' => new UploadedFile($imagePath, 'test_image.jpeg', 'image/jpeg', null, true),
             'song_image_url' => new UploadedFile($imagePath, 'test_image.jpeg', 'image/jpeg', null, true),
         ];
 
-        $response = $this->post('http://127.0.0.1:8000/api/song/update/4', $dataArtist);
+        $response = $this->post("http://127.0.0.1:8000/api/song/update/$latestId", $dataSong);
 
         $response->assertStatus(200);
         $this->assertDatabaseHas('tb_songs', ['song_name' => 'MoonD']);
@@ -63,7 +67,9 @@ class SongCRUDTest extends TestCase
 
     public function testDelete()
     {
-        $response = $this->delete('http://127.0.0.1:8000/api/song/delete/4');
+        $latestId = Song::max('id');
+
+        $response = $this->delete("http://127.0.0.1:8000/api/song/delete/$latestId");
         
         $response->assertStatus(200);
     }

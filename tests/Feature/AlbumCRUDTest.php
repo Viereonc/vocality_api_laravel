@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Album;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use \Illuminate\Http\UploadedFile;
@@ -18,7 +19,9 @@ class AlbumCRUDTest extends TestCase
 
     public function testGetId()
     {
-        $response = $this->get('http://127.0.0.1:8000/api/album/show/1');
+        $latestId = Album::max('id');
+
+        $response = $this->get("http://127.0.0.1:8000/api/album/show/$latestId");
 
         $response->assertStatus(200);
     }
@@ -29,6 +32,7 @@ class AlbumCRUDTest extends TestCase
         $bannerPath = storage_path('MikuBanner.jpeg');
 
         $dataAlbum = [
+            'id' => 3,
             'artist_id_foreign' => 2,
             'album_name' => 'MIKUNOPOLIS in LOS ANGELES',
             'album_created' => '2011',
@@ -46,6 +50,7 @@ class AlbumCRUDTest extends TestCase
     {
         $imagePath = storage_path('Gawr Gura.jpg');
         $bannerPath = storage_path('MikuBanner.jpeg');
+        $latestId = Album::max('id');
 
         $dataAlbum = [
             'artist_id_foreign' => 2,
@@ -55,7 +60,7 @@ class AlbumCRUDTest extends TestCase
             'album_banner_url' => new UploadedFile($bannerPath, 'test_image.jpeg', 'image/jpeg', null, true),
         ];
 
-        $response = $this->post('http://127.0.0.1:8000/api/album/update/3', $dataAlbum);
+        $response = $this->post("http://127.0.0.1:8000/api/album/update/$latestId", $dataAlbum);
 
         $response->assertStatus(200);
         $this->assertDatabaseHas('tb_albums', ['album_name' => 'Gawr Gura CH']);
@@ -63,7 +68,9 @@ class AlbumCRUDTest extends TestCase
 
     public function testDelete()
     {
-        $response = $this->delete('http://127.0.0.1:8000/api/album/delete/3');
+        $latestId = Album::max('id');
+
+        $response = $this->delete("http://127.0.0.1:8000/api/album/delete/$latestId");
         
         $response->assertStatus(200);
     }

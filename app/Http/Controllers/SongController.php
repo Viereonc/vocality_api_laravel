@@ -36,8 +36,11 @@ class SongController
             'album_id_foreign' => $requset->input('album_id_foreign'),
             'song_name' => $requset->input('song_name'),
             'song_duration' => $requset->input('song_duration'),
+            'song_file_url' => $this->encode($requset->file('song_file_url')),
             'song_image_url' => $this->encode($requset->file('song_image_url')),
         ];
+
+        Song::create($dataSong);
 
         return $this->postResponse($dataSong);
     }
